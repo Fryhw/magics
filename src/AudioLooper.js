@@ -3,6 +3,7 @@
 export default function AudioLooper() {
     const [audioBuffer, setAudioBuffer] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [isStopped, setIsStopped] = useState(false);
     const [loop, setLoop] = useState(false);
     const [reverse, setReverse] = useState(false);  // Nouveau state pour reverse
     const [speed, setSpeed] = useState(1);  // La vitesse par défaut
@@ -104,7 +105,6 @@ export default function AudioLooper() {
         }
 
         source.buffer = buffer;
-        source.loop = loop;  // Respecte le mode loop
         source.playbackRate.value = speed;  // Applique la vitesse initiale
 
         // Création du GainNode pour gérer le volume
@@ -119,24 +119,31 @@ export default function AudioLooper() {
 
         // Suivi du temps actuel de lecture
         source.onended = () => {
+
+
             if (loop) {
                 playAudio(); // Si loop est activé, relance l'audio
             } else {
                 setIsPlaying(false); // Si loop est désactivé, arrête la lecture
+                return;
             }
         };
     };
 
     // Fonction pour arrêter l'audio
     const stopAudio = () => {
-        // Arrête l'audio et réinitialise les états
         if (sourceRef.current) {
-            sourceRef.current.stop();
-            sourceRef.current.disconnect();
+            sourceRef.current.stop(); // Arrête la lecture
+            sourceRef.current.disconnect(); // Déconnecte la source
+            sourceRef.current = null; // Réinitialise la référence
         }
-        setIsPlaying(false);
-        setLoop(false); // Réinitialise la boucle
-        setReverse(false); // Réinitialise reverse
+
+        if (audioContextRef.current) {
+            audioContextRef.current.close(); // Ferme l'AudioContext
+            audioContextRef.current = null; // Réinitialise la référence
+        }
+
+        setIsPlaying(false); // Met à jour l'état de lecture
     };
 
     // Mise à jour de la vitesse via la barre de défilement
