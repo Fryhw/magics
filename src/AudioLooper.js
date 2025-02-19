@@ -12,40 +12,7 @@ export default function AudioLooper() {
     const sourceRef = useRef(null);
     const recorderRef = useRef(null);
     const chunksRef = useRef([]);
-    const [audioStartTime, setAudioStartTime] = useState(0);
-    const [audioEndTime, setAudioEndTime] = useState(0);
-    const [currentTime, setCurrentTime] = useState(0);  // Pour garder une trace du temps de lecture
 
-    // Fonction pour détecter les blancs au début et à la fin de l'audio
-    const detectAudioBounds = (buffer) => {
-        let start = 0;
-        let end = buffer.length;
-
-        // Détecte le début
-        for (let i = 0; i < buffer.numberOfChannels; i++) {
-            const channelData = buffer.getChannelData(i);
-            for (let j = 0; j < channelData.length; j++) {
-                if (Math.abs(channelData[j]) > 0.01) {  // Seuil pour détecter le son
-                    start = Math.max(start, j - 1000); // Commence avant l'événement sonore
-                    break;
-                }
-            }
-        }
-
-        // Détecte la fin
-        for (let i = 0; i < buffer.numberOfChannels; i++) {
-            const channelData = buffer.getChannelData(i);
-            for (let j = channelData.length - 1; j >= 0; j--) {
-                if (Math.abs(channelData[j]) > 0.01) {  // Seuil pour détecter le son
-                    end = Math.min(end, j + 1000); // Fin après l'événement sonore
-                    break;
-                }
-            }
-        }
-
-        setAudioStartTime(start / buffer.sampleRate); // Convertir en secondes
-        setAudioEndTime(end / buffer.sampleRate);  // Convertir en secondes
-    };
 
     const startRecording = async () => {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -61,7 +28,6 @@ export default function AudioLooper() {
             const context = new AudioContext();
             const buffer = await context.decodeAudioData(arrayBuffer);
             setAudioBuffer(buffer);
-            detectAudioBounds(buffer);  // Détecte les blancs dans l'audio
         };
 
         mediaRecorder.start();
@@ -114,7 +80,7 @@ export default function AudioLooper() {
         gainNode.connect(context.destination);
 
         // On démarre la lecture de l'audio
-        source.start(0, audioStartTime, audioEndTime - audioStartTime);
+        source.start(0); // Démarre la lecture dès le début
         setIsPlaying(true);
 
         // Suivi du temps actuel de lecture
