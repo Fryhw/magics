@@ -3,10 +3,7 @@ import AudioLooper from "./AudioLooper";  // Assurez-vous que le chemin correspo
 
 function App() {
     return (
-        <div className="App">
-            <h1>Audio Looper</h1>
-            <AudioLooper />
-        </div>
+        <h1><center><AudioLooper /></center></h1>
     );
 }
 

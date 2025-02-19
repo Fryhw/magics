@@ -162,44 +162,54 @@ export default function AudioLooper() {
     };
 
     return (
-        <div className="flex flex-col items-center p-4 space-y-2">
-            <button onClick={startRecording} className="p-2 bg-blue-500 text-white rounded">🎤 Start Recording</button>
-            <button onClick={stopRecording} className="p-2 bg-red-500 text-white rounded">⏹️ Stop Recording</button>
+        <div className="flex flex-col items-center justify-center p-6 space-y-6 w-full h-screen">
+            <div className="flex flex-col items-center space-y-6 w-full max-w-xs">
+                <button onClick={startRecording} className="p-8 bg-blue-500 text-white text-6xl rounded-lg w-full max-w-xs">🎤 Démarrer l'enregistrement</button>
+            </div>
+            <div className="flex flex-col items-center space-y-4 w-full max-w-xs">
+                <button onClick={stopRecording} className="p-6 bg-red-500 text-white text-6xl rounded-lg w-full max-w-xs">⏹️ Arrêter l'enregistrement</button>
+            </div>
             {audioBuffer && (
                 <>
-                    <button onClick={() => (isPlaying ? stopAudio() : playAudio())} className="p-2 bg-green-500 text-white rounded">
-                        {isPlaying ? "⏹️ Stop" : "▶️ Play"}
-                    </button>
-                    <button
-                        onClick={() => setReverse(!reverse)}
-                        disabled={isPlaying} // Désactive quand on joue
-                        className="p-2 bg-purple-500 text-white rounded"
-                    >
-                        {reverse ? "🔄 Play Normal" : "🔄 Play Reverse"}
-                    </button>
-                    <button
-                        onClick={() => setLoop(!loop)}
-                        disabled={isPlaying} // Désactive quand on joue
-                        className={`p-2 rounded ${loop ? "bg-yellow-500" : "bg-gray-500"}`}
-                    >
-                        {loop ? "🔁 Looping" : "🔁 Loop"}
-                    </button>
-                    <div className="flex flex-col items-center">
-                        <label htmlFor="speed" className="text-white">Speed Control</label>
+                    <div className="flex flex-col items-center space-y-4 w-full max-w-xs">
+                        <button onClick={() => (isPlaying ? stopAudio() : playAudio())} className="p-6 bg-green-500 text-white text-3xl rounded-lg w-full max-w-xs">
+                            {isPlaying ? "⏹️ Arrêter" : "▶️ Jouer"}
+                        </button>
+                    </div>
+                    <div className="flex flex-col items-center space-y-4 w-full max-w-xs">
+                        <button
+                            onClick={() => setReverse(!reverse)}
+                            disabled={isPlaying} // Désactive quand on joue
+                            className="p-6 bg-purple-500 text-white text-3xl rounded-lg w-full max-w-xs"
+                        >
+                            {reverse ? "🔄 Normal" : "🔄 Inverser"}
+                        </button>
+                    </div>
+                    <div className="flex flex-col items-center space-y-4 w-full max-w-xs">
+                        <button
+                            onClick={() => setLoop(!loop)}
+                            disabled={isPlaying} // Désactive quand on joue
+                            className={`p-6 rounded-lg text-white text-3xl w-full max-w-xs ${loop ? "bg-yellow-500" : "bg-gray-500"}`}
+                        >
+                            {loop ? "🔁 Lecture seule" : "🔁 Lecture boucle"}
+                        </button>
+                    </div>
+                    <div className="flex flex-col items-center space-y-4 w-full max-w-xs">
+                        <label htmlFor="speed" className="text-white text-2xl">Vitesse</label>
                         <input
                             id="speed"
                             type="range"
-                            min="0.5"
+                            min="0.4"
                             max="2"
                             step="0.1"
                             value={speed}
                             onChange={handleSpeedChange}
                             className="w-full"
                         />
-                        <span className="text-white">{speed}x</span>
+                        <span className="text-white text-2xl">{speed}x</span>
                     </div>
-                    <div className="flex flex-col items-center">
-                        <label htmlFor="volume" className="text-white">Volume Control</label>
+                    <div className="flex flex-col items-center space-y-4 w-full max-w-xs">
+                        <label htmlFor="volume" className="text-white text-2xl">Volume</label>
                         <input
                             id="volume"
                             type="range"
@@ -210,10 +220,12 @@ export default function AudioLooper() {
                             onChange={handleVolumeChange}
                             className="w-full"
                         />
-                        <span className="text-white">{(volume * 100).toFixed(0)}%</span>
+                        <span className="text-white text-2xl">{(volume * 100).toFixed(0)}%</span>
                     </div>
                 </>
             )}
         </div>
     );
+
+
 }
